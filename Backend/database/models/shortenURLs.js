@@ -1,16 +1,28 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config.js";
 
-const shortenURL = sequelize.define("shortenURL", {
-  id: {
-    type: DataTypes.NUMBER,
-    allowNull: false,
-    primaryKey: true,
+const shortenURL = sequelize.define(
+  "ShortenURL",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    shortCode: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
   },
-  url: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
-
+  {
+    timestamps: true,
+    tableName: "shortenURLs",
+  }
+);
 export default shortenURL;
