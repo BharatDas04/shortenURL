@@ -25,8 +25,16 @@ export const createShortURL = async (req, res) => {
   if (!isValidURL(url)) {
     return res.status(400).send({ error: "invalid URL" });
   }
-  let code = uniqueCodeGenerator().next();
 
+  const exists = await shortenURL.findAll({
+    where: { url: url },
+  });
+
+  if (exists.length > 0) {
+    return res.status(400).send({ error: "URL Exists, Please use Update" });
+  }
+
+  let code = uniqueCodeGenerator().next();
   const stored = await shortenURL.create({
     url: url,
     shortCode: code.value,

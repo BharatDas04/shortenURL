@@ -4,10 +4,18 @@ import dotenv from "dotenv";
 import indexRoutes from "./routes/index.js";
 import { logger } from "./middleware/logger.js";
 import sequelize from "./database/config.js";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 app.use(express.json());
 app.use(morgan("dev"));
