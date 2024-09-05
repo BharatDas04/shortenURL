@@ -1,7 +1,7 @@
 import shortenURL from "../database/models/shortenURLs.js";
 
 export const deleteShortURL = async (req, res) => {
-  const urlID = req.params[0];
+  const urlID = req.params.code;
   const lengthOfID = urlID.length;
 
   // Validation
@@ -10,16 +10,17 @@ export const deleteShortURL = async (req, res) => {
   }
 
   // Checking if URL exists
-  const findURL = await shortenURL.findOne({
+  const findURL = await shortenURL.findAll({
     where: { shortCode: urlID },
   });
+
   if (findURL === null) {
     return res.status(404);
   }
 
-  await shortenURL.destroy({
+  const del = await shortenURL.destroy({
     where: { shortCode: urlID },
   });
 
-  return res.status(204);
+  return res.status(204).send({ del: del });
 };

@@ -21,7 +21,7 @@ function* uniqueCodeGenerator() {
 }
 
 export const updateShortURL = async (req, res) => {
-  const urlID = req.params[0];
+  const urlID = req.params.code;
   const lengthOfID = urlID.length;
 
   // Validation
