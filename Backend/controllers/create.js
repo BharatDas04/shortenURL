@@ -1,4 +1,3 @@
-import sequelize from "../database/config.js";
 import shortenURL from "../database/models/shortenURLs.js";
 
 function* uniqueCodeGenerator() {
@@ -26,10 +25,12 @@ export const createShortURL = async (req, res) => {
   if (!isValidURL(url)) {
     return res.status(400).send({ error: "invalid URL" });
   }
-  const code = uniqueCodeGenerator().next();
+  let code = uniqueCodeGenerator().next();
+
   const stored = await shortenURL.create({
     url: url,
     shortCode: code.value,
+    accessCount: 0,
   });
   return res.status(201).send(stored);
 };

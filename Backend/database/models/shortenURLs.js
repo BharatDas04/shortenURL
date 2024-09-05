@@ -17,7 +17,10 @@ const shortenURL = sequelize.define(
     shortCode: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    accessCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   },
   {
