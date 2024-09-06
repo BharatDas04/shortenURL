@@ -6,6 +6,8 @@ import { logger } from "./middleware/logger.js";
 import sequelize from "./database/config.js";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import cron from "node-cron";
+import { exec } from "child_process";
 
 dotenv.config();
 
@@ -33,6 +35,21 @@ app.use("/", indexRoutes);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ error: "Something went wrong!" });
+});
+
+// Schedule a restart at 2 AM every day
+cron.schedule("0 2 * * *", () => {
+  console.log("Restarting server...");
+  exec("pm2 restart server", (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error restarting server: ${err}`);
+      return;
+    }
+    console.log(`Server restarted: ${stdout}`);
+    if (stderr) {
+      console.error(`Stderr: ${stderr}`);
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3000;
