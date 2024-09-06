@@ -1,26 +1,28 @@
 import shortenURL from "../database/models/shortenURLs.js";
+import sequelize from "../database/config.js";
 
 export const deleteShortURL = async (req, res) => {
-  const urlID = req.params.code;
-  const lengthOfID = urlID.length;
-
-  // Validation
-  if (lengthOfID > 5 || lengthOfID < 5) {
-    return res.status(400).send({ error: "Validation Error" });
-  }
-
+  const urlID = req.query.url;
+  const endCode = urlID.slice(-5);
+  const transaction = await sequelize.transaction();
   // Checking if URL exists
-  const findURL = await shortenURL.findAll({
-    where: { shortCode: urlID },
+  const findURL = await shortenURL.findOne({
+    where: { shortCode: endCode },
+    transaction,
   });
 
-  if (findURL === null) {
-    return res.status(404);
+  if (!findURL) {
+    await transaction.rollback();
+    return res.status(404).send({ error: "URL doesn't exist." });
   }
 
-  const del = await shortenURL.destroy({
-    where: { shortCode: urlID },
+  // Destroy the URL entry
+  await shortenURL.destroy({
+    where: { id: findURL.dataValues.id },
+    transaction,
   });
 
-  return res.status(204).send({ del: del });
+  // Commit the transaction
+  await transaction.commit();
+  return res.status(204).send();
 };

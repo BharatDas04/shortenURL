@@ -5,6 +5,7 @@ import indexRoutes from "./routes/index.js";
 import { logger } from "./middleware/logger.js";
 import sequelize from "./database/config.js";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -16,6 +17,12 @@ app.use(
     allowedHeaders: "Content-Type, Authorization",
   })
 );
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: "Too many requests from this IP, please try again later.",
+});
+app.use(limiter);
 
 app.use(express.json());
 app.use(morgan("dev"));

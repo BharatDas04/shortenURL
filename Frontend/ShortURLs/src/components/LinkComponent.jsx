@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from 'axios';
 import Select from 'react-select';
 
-export default function LinkComponent() {
+export default function LinkComponent({ setCurrentIndex, setDateCreated, setDateUpdated, setVisiterCount, setOriginalURL, setshortenURL }) {
     const [result, setResult] = useState(false)
     const [inputLink, setInputLink] = useState("")
     const [inputError, setInputError] = useState("")
@@ -19,10 +19,9 @@ export default function LinkComponent() {
       ];
     const [selectedOption, setSelectedOption] = useState(null);
 
-      const handleChange = (option) => {
+    const handleChange = (option) => {
         setSelectedOption(option);
-        console.log('Selected option:', option);
-      };
+    };
       
 
     async function handleSubmit(){
@@ -48,24 +47,110 @@ export default function LinkComponent() {
 
         // Function
         setLoading(true);
-    try {
-        const response = await axios.post(backendURL + "shorten", { url: inputLink });
-        if (response.status === 200) {  
-            const newURL = frontendURL + response.data.shortCode;
-            setInputLink(newURL);
-        } else {
-            console.error('Unexpected response status:', response.status);
-            setInputLink('Unexpected error');
-        }
-        } catch (error) {
-        if (error.response) {
-            setInputLink(`Error: ${error.response.data.error || 'An error occurred'}`);
-        }
-        } finally {
-        setLoading(false);
-        setResult(true);
+        if(selectedOption.value === "create"){
+            createURL();
+        }else if(selectedOption.value === "update"){
+            updateURL();
+        }else if(selectedOption.value === "delete"){
+            deleteURL();
+        }else{
+            statsURL();
         }
 
+        setLoading(false);
+        setResult(true);
+       
+
+    }
+
+    const createURL = async() =>{
+        try {
+            const response = await axios.post(backendURL + "shorten", { url: inputLink });
+            if (response.status === 201) {  
+                const newURL = frontendURL + response.data.shortCode;
+                setInputLink(newURL);
+            } else {
+                console.error('Unexpected response status:', response.status);
+                setInputLink('Unexpected error');
+            }
+            } catch (error) {
+            if (error.response) {
+                if(error.response.status === 429){
+                    setInputLink("Try again tomorrow. Limit reached for this IP.");
+                }else{
+                    setInputLink(`Error: ${error.response.data.error || 'An error occurred'}`);
+                }
+                
+            }
+            }
+    }
+    const updateURL = async() =>{
+        try {
+            const response = await axios.put(backendURL + "shorten/update", { url: inputLink });
+            if (response.status === 201) {  
+                const newURL = frontendURL + response.data.shortCode;
+                setInputLink(newURL);
+            } else {
+                console.error('Unexpected response status:', response.status);
+                setInputLink('Unexpected error');
+            }
+        } catch (error) {
+            if (error.response) {
+                if(error.response.status === 429){
+                    setInputLink("Try again tomorrow. Limit reached for this IP.");
+                }else{
+                    setInputLink(`Error: ${error.response.data.error || 'An error occurred'}`);
+                }
+                
+            }
+        }
+    }
+    const deleteURL = async() =>{
+        try {
+            const response = await axios.delete(backendURL + "shorten/delete", {
+                params: { url: inputLink }
+              });
+            if (response.status === 204) {  
+                setInputLink("Deleted Successfully");
+            } else {
+                console.error('Unexpected response status:', response.status);
+                setInputLink('Unexpected error');
+            }
+        } catch (error) {
+            if (error.response) {
+                if(error.response.status === 429){
+                    setInputLink("Try again tomorrow. Limit reached for this IP.");
+                }else{
+                    setInputLink(`Error: ${error.response.data.error || 'An error occurred'}`);
+                }
+                
+            }
+        }
+    }
+    const statsURL = async() =>{
+        try {
+            const response = await axios.get(backendURL + "shorten/" + inputLink.slice(-5) + "/stats");
+            if (response.status === 200) {  
+                setDateCreated(response.data[0].createdAt)
+                setDateUpdated(response.data[0].updatedAt)
+                setOriginalURL(response.data[0].url)
+                setshortenURL(frontendURL + response.data[0].shortCode)
+                setVisiterCount(response.data[0].accessCount)
+                setCurrentIndex(1)
+            } else {
+                console.error('Unexpected response status:', response.status);
+                setInputLink('Unexpected error');
+            }
+        } catch (error) {
+            if (error.response) {
+                if(error.response.status === 429){
+                    setInputLink("Try again tomorrow. Limit reached for this IP.");
+                }else{
+                    setInputLink(`Error: ${error.response.data.error || 'An error occurred'}`);
+                }
+                
+            }
+        }
     }
 
     function handleInput(e){
@@ -101,8 +186,8 @@ export default function LinkComponent() {
                             color: "white",
                             outline: 'none',
                             '&:focus': {
-                                outline: 'none', // Ensure outline is removed on focus
-                                boxShadow: 'none', // Ensure box shadow is removed on focus
+                                outline: 'none', 
+                                boxShadow: 'none', 
                             },
                         }),
                         indicatorSeparator: () => ({ display: 'none' }), // Hide the separator

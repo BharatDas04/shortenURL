@@ -6,7 +6,7 @@ export const statsURL = async (req, res) => {
 
   // Validation
   if (lengthOfID > 5 || lengthOfID < 5) {
-    return res.status(404).send({ error: "URL doesn't exist" });
+    return res.status(404).send({ error: "URL is Invalid" });
   }
   console.log("IN STATS");
   // Searching Database
@@ -14,8 +14,8 @@ export const statsURL = async (req, res) => {
     where: { shortCode: urlID },
   });
 
-  if (!result) {
-    return res.status(404);
+  if (result.length === 0) {
+    return res.status(404).send({ error: "URL doesn't exist" });
   }
 
   // Return Data

@@ -1,4 +1,3 @@
-import sequelize from "../database/config.js";
 import shortenURL from "../database/models/shortenURLs.js";
 
 export const redirectShortenURLs = async (req, res) => {
@@ -7,7 +6,7 @@ export const redirectShortenURLs = async (req, res) => {
 
   // Validation
   if (lengthOfID > 5 || lengthOfID < 5) {
-    return res.status(400).send("Resource not found");
+    return res.status(400).send({ error: "Resource not found" });
   }
 
   // Update the visited

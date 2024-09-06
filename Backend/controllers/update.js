@@ -20,22 +20,27 @@ function* uniqueCodeGenerator() {
   }
 }
 
+function isValidURL(urlString) {
+  var regex =
+    /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+  return regex.test(urlString);
+}
+
 export const updateShortURL = async (req, res) => {
-  const urlID = req.params.code;
-  const lengthOfID = urlID.length;
+  const urlID = req.body.url;
 
   // Validation
-  if (lengthOfID > 5 || lengthOfID < 5) {
-    return res.status(400).send({ error: "Validation Error" });
+  if (!isValidURL(urlID)) {
+    return res.status(400).send({ error: "invalid URL" });
   }
 
   // Searching for original url
-  const originalURL = await shortenURL.findOne({
-    where: { shortCode: urlID },
+  const originalURL = await shortenURL.findAll({
+    where: { url: urlID },
   });
 
-  // return status 200 if URL doesn't exist
-  if (originalURL === null) {
+  // return status 404 if URL doesn't exist
+  if (originalURL.length === 0) {
     return res.status(404).send({ error: "URL doesn't exist" });
   }
 
@@ -46,12 +51,12 @@ export const updateShortURL = async (req, res) => {
   await shortenURL.update(
     { shortCode: code.value },
     {
-      where: { url: originalURL.dataValues.url },
+      where: { url: urlID },
     }
   );
 
   const stored = await shortenURL.findOne({
-    where: { url: originalURL.dataValues.url },
+    where: { url: urlID },
   });
 
   return res.status(201).send(stored.dataValues);

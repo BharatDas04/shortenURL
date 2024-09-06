@@ -8,10 +8,19 @@ import bgImg from "../assets/bg.jpg"
 
 export default function IndexPage() {
     const [currentIndex, setCurrentIndex] = useState(0);
-    
+
+    // stats variables
+    const [dateCreated, setDateCreated] = useState("None")
+    const [dateUpdated, setDateUpdated] = useState("None")
+    const [visiterCount, setVisiterCount] = useState("0")
+    const [originalURL, setOriginalURL] = useState("INVALID")
+    const [shortenURL, setshortenURL] = useState("None")
+
   const slides = [
-    <LinkComponent/>,
-    <ChartComponent/>
+    <LinkComponent setCurrentIndex={setCurrentIndex} setDateCreated={setDateCreated} setDateUpdated={setDateUpdated} 
+    setVisiterCount={setVisiterCount} setOriginalURL={setOriginalURL} setshortenURL={setshortenURL} />,
+    <ChartComponent dateCreated={dateCreated} dateUpdated={dateUpdated} visiterCount={visiterCount} originalURL={originalURL} 
+    shortenURL={shortenURL} />
   ];
 
   return (
