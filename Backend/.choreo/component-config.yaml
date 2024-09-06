@@ -1,0 +1,10 @@
+name: shortenURL-backend
+version: 1.0.0
+runtime: nodejs16
+source:
+  path: .
+build:
+  command: npm install
+  output-path: .
+start:
+  command: node server.js
