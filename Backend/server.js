@@ -29,7 +29,12 @@ app.use(limiter);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(logger);
+
 app.use("/", indexRoutes);
+
+app.get("/api/hello", (req, res) => {
+  res.send("Hello, world!");
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
