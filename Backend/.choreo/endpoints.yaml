@@ -1,0 +1,25 @@
+endpoints:
+  - path: /shorten
+    method: POST
+    description: "Creates a new shortened URL"
+    handler: indexRoutes.createShortURL
+
+  - path: /shorten/update
+    method: PUT
+    description: "Updates an existing shortened URL"
+    handler: indexRoutes.updateShortURL
+
+  - path: /shorten/{code}/stats
+    method: GET
+    description: "Retrieves stats for a shortened URL"
+    handler: indexRoutes.statsURL
+
+  - path: /shorten/delete
+    method: DELETE
+    description: "Deletes a shortened URL"
+    handler: indexRoutes.deleteShortURL
+
+  - path: /shorten/*
+    method: GET
+    description: "Redirects to the appropriate URL based on the shortened code"
+    handler: indexRoutes.redirectShortenURLs
