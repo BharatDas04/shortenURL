@@ -145,6 +145,7 @@ The backend is hosted on Render.com, providing scalable and reliable performance
 
 ---
 ## Contact 📧
-- #### Feel free to reach out to me via [LinkedIn](https://www.linkedin.com/in/bharatdas04/) or email me at 2002bharatdas@gmail.com
+- #### Feel free to reach out to me via [LinkedIn](https://www.linkedin.com/in/bharatdas04/) or email me at 2002bharatdas@gmail.com.
+- #### [Project Link](https://roadmap.sh/projects/url-shortening-service)
 
 
