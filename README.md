@@ -31,13 +31,12 @@ This is a URL shortening application designed as a personal project to showcase 
 
 ## Table of Contents 📚
 
-- [Getting Started](#getting-started)
-- [Frontend](#frontend)
-- [Backend](#backend)
-- [API Endpoints](#api-endpoints)
-- [Technologies Used](#technologies-used)
-- [Future Improvements](#future-improvements)
-- [License](#license)
+- Getting Started
+- Frontend
+- Backend
+- API Endpoints
+- Technologies Used
+- Future Improvements
 
 ---
 
@@ -83,6 +82,10 @@ npm run dev
 ```bash
 cd backend
 npm start
+```
+#### .env
+```bash
+Make sure to update .env file.
 ```
 
 ## Frontend 🖼️
