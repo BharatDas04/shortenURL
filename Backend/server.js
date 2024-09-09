@@ -36,6 +36,10 @@ app.get("/api/hello", (req, res) => {
   res.send("Hello, world!");
 });
 
+app.get("/ping", (req, res) => {
+  res.status(200).send();
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
